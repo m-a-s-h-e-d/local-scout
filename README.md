@@ -1,1 +1,1 @@
-# local-scout
+# Local Scout
