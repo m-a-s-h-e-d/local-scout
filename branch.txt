@@ -1,6 +1,1 @@
-This is the Development Branch for Local Scout.
-
-Second Part of the code
-
-123
-Third cool part code of the code
+This is a test feature branch for Local Scout.
