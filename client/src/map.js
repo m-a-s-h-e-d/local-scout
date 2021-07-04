@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import ReactMapGL, { Marker } from 'react-map-gl';
+import Pins from './pins'
 // var mapboxgl = require("mapbox-gl/dist/mapbox-gl.js"); 
 // Switching to use react-map-gl wrapper for mapbox... made by uber for the market
 
@@ -36,6 +37,8 @@ export default function MapPage() {
   const [lng, setLng] = useState(-123.116226);
   const [lat, setLat] = useState(49.246292);
   const [zoom, setZoom] = useState(10);
+  const [locationData, setData] = useState([]);
+  const [popData, setPopData] = useState(null);
 
   const [viewport, setViewport] = React.useState({
     longitude: lng,
@@ -43,14 +46,36 @@ export default function MapPage() {
     zoom: zoom
   });
 
-  const markers = React.useMemo(() => cities.map(
-    city => (
-      <Marker key={city.name} longitude={city.longitude} latitude={city.latitude}>
-        <div>Check out {city.name}!! </div>
-      </Marker>
+  // fetch data
+  useEffect(() => {
+    fetch('/get-data')
+    .then((res) => res.json())
+    .then((response) => {
+      console.log(response.data)
+      if (response.status === "success") {
+        setData(Array(response.data))
+        // console.log(locationData)
+        console.log(typeof(locationData), "hello")
+      } else {
+        console.log("Unable to get data", response)
+      }
+    })
+    .catch(
+      (err) => console.error(err)
+    );
+    return () => {
+      setData(null) // cleanup
+    }
+  }, [locationData])
 
-    )
-  ), [cities])
+  // const markers = React.useMemo(() => cities.map(
+  //   city => (
+  //     <Marker key={city.name} longitude={city.longitude} latitude={city.latitude}>
+  //       <div>Check out {city.name}!! </div>
+  //     </Marker>
+
+  //   )
+  // ), [cities])
 
   // useEffect(() => {
   //   const map = new mapboxgl.Map({
@@ -71,7 +96,7 @@ export default function MapPage() {
     <>
       {/* <div className="map-container" ref={mapContainer} /> */}
       <ReactMapGL {...viewport} width="100vw" height="100vh" onViewportChange={setViewport} mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}>
-        {markers}
+        <Pins data={locationData} onClick={setPopData}/>
       </ReactMapGL>
     </>
   );

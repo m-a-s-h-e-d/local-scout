@@ -128,4 +128,4 @@ yarn-error.log*
 
 # Mongodb cert
 ./cert.pem
-.cert.pem
+cert.pem
